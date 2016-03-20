@@ -3,16 +3,28 @@
 Run make to build (requires OpenSSL).
 
 To extract an EC firmware image from the BIOS update file:
-    dd if=\$01DA000.FL2 of=mec.bin bs=4096 skip=1280 count=48
+
+```sh
+dd if=\$01DA000.FL2 of=mec.bin bs=4096 skip=1280 count=48
+```
 
 To decrypt an EC firmware image:
-    ./mec_encrypt -d mec.bin >mec-decrypted.bin
+
+```sh
+./mec_encrypt -d mec.bin >mec-decrypted.bin
+```
 
 To reencrypt the image after modification, fixing checksums:
-    ./mec_repack mec-decrypted.bin mec-new.bin
+
+```sh
+./mec_repack mec-decrypted.bin mec-new.bin
+```
 
 To reembed into the BIOS update file:
-    dd if=mec-new.bin of=\$01DA000.FL2 conv=notrunc bs=4096 seek=1280
+
+```sh
+dd if=mec-new.bin of=\$01DA000.FL2 conv=notrunc bs=4096 seek=1280
+```
 
 Before carrying out your own modifications, follow the above steps on
 the unmodified image and check that, in the third step, the checksums
