@@ -5,7 +5,7 @@ LD_LIBS_mec_encrypt = -lcrypto
 all: $(TOOLS)
 
 %: %.c mmapfile.h
-	$(CC) $(CFLAGS) $^ -o $@ $(LD_LIBS_$@)
+	$(CC) $(CFLAGS) $< -o $@ $(LD_LIBS_$@)
 
 clean:
 	rm -f $(TOOLS)
