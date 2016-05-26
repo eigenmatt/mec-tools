@@ -151,6 +151,7 @@ int main(int argc, char *argv[])
     unsigned char thisiv[8];
     ssize_t r;
     int enc;
+    int out_fd = STDOUT_FILENO;
 
     if ((argc >= 3) && (strcmp(argv[1], "-e") == 0))
         enc = 1;
@@ -158,7 +159,7 @@ int main(int argc, char *argv[])
         enc = 0;
     else
     {
-        fprintf(stderr, "usage: %s {-e|-d} file\n", argv[0]);
+        fprintf(stderr, "usage: %s {-e|-d} file [outfile]\n", argv[0]);
         return 1;
     }
 
@@ -169,14 +170,25 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    if (argc >= 4)
+    {
+        out_fd = open(argv[3], O_WRONLY|O_CREAT, 0666);
+        if (out_fd == -1)
+        {
+            perror("Could not open output file");
+            return 1;
+        }
+    }
+
     memcpy(thisiv, iv, 8);
     BF_cbc_encrypt(base, out, 0x200, &key, thisiv, enc);
-    r = write(STDOUT_FILENO, out, 0x200);
-    r += write(STDOUT_FILENO, base+0x200, 0xff0-0x200);
+    r = write(out_fd, out, 0x200);
+    r += write(out_fd, base+0x200, 0xff0-0x200);
     memcpy(thisiv, iv, 8);
     BF_cbc_encrypt(base+0xff0, out, 0x3000-0xff0, &key, thisiv, enc);
-    r += write(STDOUT_FILENO, out, 0x3000-0xff0);
-    r += write(STDOUT_FILENO, base+0x3000, length-0x3000);
+    r += write(out_fd, out, 0x3000-0xff0);
+    r += write(out_fd, base+0x3000, length-0x3000);
     munmap(base, length);
+    close(out_fd);
     return (r!=length);
 }
