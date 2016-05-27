@@ -10,13 +10,13 @@ fi
 echo building $2 from $1
 ./mec_csum_boot -f $1
 ./mec_csum_flasher -f $1
-./mec_encrypt -e $1 >$2
+./mec_encrypt -e $1 $2
 ./mec_csum_outer -f $2
 echo
 echo reverifying
 tmp=`mktemp`
 ./mec_csum_outer -c $2
-./mec_encrypt -d $2 >$tmp
+./mec_encrypt -d $2 $tmp
 ./mec_csum_flasher -c $tmp
 ./mec_csum_boot -c $tmp
 rm -f $tmp

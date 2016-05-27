@@ -30,3 +30,10 @@
 
 # Debug files
 *.dSYM/
+
+# Generated Outputs specific to this repo
+mec_csum_boot
+mec_csum_flasher
+mec_csum_outer
+mec_encrypt
+
